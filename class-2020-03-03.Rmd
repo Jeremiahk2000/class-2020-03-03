@@ -1,0 +1,39 @@
+---
+title: "class-2020-03-03"
+author: "Jeremiah Kim"
+date: "3/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(fs)
+library(tidyverse)
+library(googlesheets4)
+library(readxl)
+library(janitor)
+library(gt)
+```
+
+```{r}
+download.file("https://registrar.fas.harvard.edu/files/fas-registrar/files/class_enrollment_summary_by_term_2.25.20_0.xlsx", destfile = "Spring2020.xlsx")
+Spring2020 <- read_excel("Spring2020.xlsx", skip = 3) %>% 
+  na.omit() %>% 
+  clean_names()
+
+download.file("https://registrar.fas.harvard.edu/files/fas-registrar/files/class_enrollment_summary_by_term_12.20.19.xlsx", destfile = "Fall2019.xlsx")
+Fall2019 <- read_excel("Fall2019.xlsx", skip = 3) %>% 
+  na.omit() %>% 
+  clean_names()
+```
+
+```{r}
+newcourses <- Spring2020 %>% 
+anti_join(Fall2019, by = "course_id") %>% 
+  arrange(desc(total)) 
+  
+
+newcourses
+```
+
+
